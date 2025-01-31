@@ -73,6 +73,3 @@ msg_ok "Completed Successfully!\n"
 echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"
 echo -e "${INFO}${YW} Access it using the following URL:${CL}"
 echo -e "${TAB}${GATEWAY}${BGN}https://${IP}:8443${CL}"
-echo -e "${TAB}${BL}Username: $(grep -oP '(?<="username": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
-echo -e "${TAB}${BL}Password: $(grep -oP '(?<="password": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
-
