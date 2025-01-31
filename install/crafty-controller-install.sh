@@ -92,7 +92,7 @@ EOF
 msg_info "Enabling and starting Crafty-Controller service"
 systemctl enable --now crafty-controller.service
 # Wait for passwd generation
-sleep 10
+sleep 20
 
 motd_ssh
 customize
