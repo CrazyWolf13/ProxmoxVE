@@ -64,7 +64,7 @@ EOF
 msg_ok "Installed Craft-Controller and dependencies"
 
 msg_info "Creating Crafty 4 service and startup file"
-cat <<EOF >/opt/run_crafty-controller.sh
+cat > /opt/run_crafty-controller.sh << EOF
 #!/bin/bash
 cd /opt/crafty-controller/crafty
 source .venv/bin/activate
@@ -101,7 +101,7 @@ rm -rf /opt/crafty-4-v${RELEASE}.zip
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
-@ Wait for creds generation
+# Wait for creds generation
 sleep 10
 echo -e "${TAB}${BL}Username: $(grep -oP '(?<="username": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
 echo -e "${TAB}${BL}Password: $(grep -oP '(?<="password": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
