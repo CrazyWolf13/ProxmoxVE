@@ -25,9 +25,8 @@ $STD apt-get install -y \
   python3-dev \
   python3-pip \
   software-properties-common \
-  openjdk \
-  openjdk-8-jdk \
-  openjdk-8-jre \  
+  openjdk-17-jdk \
+  openjdk-17-jre \  
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
