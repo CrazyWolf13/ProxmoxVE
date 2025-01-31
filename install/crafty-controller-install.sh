@@ -42,7 +42,7 @@ msg_info "Installing Craty-Controller (Patience)"
 cd /opt
 mkdir -p /opt/crafty-controller/crafty /opt/crafty-controller/server
 RELEASE=$(curl -s "https://gitlab.com/api/v4/projects/20430749/releases" | grep -o '"tag_name":"v[^"]*"' | head -n 1 | sed 's/"tag_name":"v//;s/"//')
-RELEAES="4.4.4"
+RELEASE="4.4.4"
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 wget -q "https://gitlab.com/crafty-controller/crafty-4/-/archive/v${RELEASE}/crafty-4-v${RELEASE}.zip"
 unzip -q crafty-4-v${RELEASE}.zip
@@ -53,13 +53,8 @@ cd /opt/crafty-controller/crafty
 python3 -m venv .venv
 chown -R crafty:crafty /opt/crafty-controller/
 $STD sudo -u crafty bash <<EOF
-    # Activate virtual environment
     source /opt/crafty-controller/crafty/.venv/bin/activate
-    
-    # Navigate to Crafty 4 directory
     cd /opt/crafty-controller/crafty/crafty-4
-    
-    # Install dependencies
     pip3 install --no-cache-dir -r requirements.txt
 EOF
 msg_ok "Installed Craft-Controller and dependencies"
