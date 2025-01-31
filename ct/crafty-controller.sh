@@ -42,12 +42,12 @@ function update_script() {
       
       msg_info "Updating Crafty-Controller to v${RELEASE}"
       cd /opt/crafty-controller/crafty/crafty-4
-      $STD sudo -u crafty bash <<EOF
+      $STD sudo -u crafty bash -c '
         git fetch && git pull
         source /opt/crafty-controller/crafty/.venv/bin/activate
         cd /opt/crafty-controller/crafty/crafty-4
         pip3 install --no-cache-dir -r requirements.txt
-      EOF
+      '
       echo "${RELEASE}" >"/opt/craft-controller_version.txt"
       msg_ok "Updated Crafty-Controller to v${RELEASE}"
 
