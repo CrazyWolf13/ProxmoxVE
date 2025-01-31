@@ -37,20 +37,18 @@ function update_script() {
     if [[ ! -f /opt/$crafty-controller_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/crafty-controller_version.txt)" ]]; then
       
       msg_info "Stopping Crafty-Controller"
-      systemctl stop crafty.service
+      systemctl stop crafty-controller.service
       msg_ok "Stopped Crafty-Controller"
       
       msg_info "Updating Crafty-Controller to v${RELEASE}"
-      cd /opt
-      wget -q "https://gitlab.com/crafty-controller/crafty-4/-/archive/v${RELEASE}/crafty-4-v${RELEASE}.zip"
-      unzip -q crafty-4-v${RELEASE}.zip
-      mv crafty-4-v${RELEASE} /opt/crafty-controller 
-      cd /opt/crafty-controller
-
-      # Update instructions
-      
+      cd /opt/crafty-controller/crafty/crafty-4
+      $STD sudo -u crafty bash <<EOF
+        git fetch && git pull
+        source /opt/crafty-controller/crafty/.venv/bin/activate
+        cd /opt/crafty-controller/crafty/crafty-4
+        pip3 install --no-cache-dir -r requirements.txt
+      EOF
       echo "${RELEASE}" >"/opt/craft-controller_version.txt"
-      rm -rf /opt/crafty-4-v${RELEASE}.zip
       msg_ok "Updated Crafty-Controller to v${RELEASE}"
 
       msg_info "Starting Crafty-Controller"
