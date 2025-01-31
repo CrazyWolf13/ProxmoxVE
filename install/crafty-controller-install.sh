@@ -101,5 +101,7 @@ rm -rf /opt/crafty-4-v${RELEASE}.zip
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
+@ Wait for creds generation
+sleep 10
 echo -e "${TAB}${BL}Username: $(grep -oP '(?<="username": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
 echo -e "${TAB}${BL}Password: $(grep -oP '(?<="password": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
