@@ -31,13 +31,8 @@ $STD apt-get install -y \
   openjdk-17-jdk \
   openjdk-17-jre
 msg_info "Adding more recent java version"
-$STD sudo apt install -y 
-wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo tee /etc/apt/trusted.gpg.d/adoptium.asc
-sudo wget -qO - https://packages.adoptium.net/artifactory/deb/$(lsb_release -c | awk '{print $2}')/adoptium.list -P /etc/apt/sources.list.d/
-$STD sudo apt update
-$STD sudo apt install -y \
-  temurin-21-jdk \
-  temurin-21-jre
+wget -q https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb
+$STD sudo dpkg -i jdk-21_linux-x64_bin.deb
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
