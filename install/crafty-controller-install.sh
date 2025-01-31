@@ -13,7 +13,7 @@ setting_up_container
 network_check
 update_os
 
-msg_info "Installing Dependencies"
+msg_info "Installing Dependencies (a lot of patience)"
 $STD apt-get install -y \
   curl \
   sudo \
@@ -30,9 +30,10 @@ $STD apt-get install -y \
   openjdk-17-jre
 msg_info "Adding more recent java version"
 $STD echo "deb http://deb.debian.org/debian unstable main" | sudo tee /etc/apt/sources.list.d/unstable.list
-$STD echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 100" | sudo tee /etc/apt/preferences.d/limit-unstable
+$STD echo -e "Package: openjdk-21-jdk\nPin: release a=unstable\nPin-Priority: 1001" | sudo tee /etc/apt/preferences.d/unstable-java
+$STD echo -e "Package: *\nPin: release a=stable\nPin-Priority: 1000" | sudo tee /etc/apt/preferences.d/stable-packages
 $STD sudo apt-get update
-$STD sudo apt-get install -t unstable -y \
+$STD sudo DEBIAN_FRONTEND=noninteractive apt-get install -t unstable -y \
     openjdk-21-jdk \
     openjdk-21-jre
 msg_ok "Installed Dependencies"
