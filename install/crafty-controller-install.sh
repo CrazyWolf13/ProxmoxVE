@@ -27,7 +27,9 @@ $STD apt-get install -y \
   python3-venv \
   software-properties-common \
   openjdk-17-jdk \
-  openjdk-17-jre 
+  openjdk-17-jre \
+  openjdk-21-jdk \
+  openjkd-21-jre
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
@@ -42,13 +44,12 @@ echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 wget -q "https://gitlab.com/crafty-controller/crafty-4/-/archive/v${RELEASE}/crafty-4-v${RELEASE}.zip"
 unzip -q crafty-4-v${RELEASE}.zip
 mv crafty-4-v${RELEASE} /opt/crafty-controller/crafty/crafty-4
-chown -R crafty:crafty /opt/crafty-controller/
 
 msg_info "Setting up python venv and installing dependencies"
-
 cd /opt/crafty-controller/crafty
 python3 -m venv .venv
-sudo -u crafty bash <<EOF
+chown -R crafty:crafty /opt/crafty-controller/
+$STD sudo -u crafty bash <<EOF
     # Activate virtual environment
     source /opt/crafty-controller/crafty/.venv/bin/activate
     
