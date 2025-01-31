@@ -24,29 +24,41 @@ $STD apt-get install -y \
   python3 \
   python3-dev \
   python3-pip \
+  python3-venv \
   software-properties-common \
   openjdk-17-jdk \
-  openjdk-17-jre \  
+  openjdk-17-jre 
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
-useradd crafty -s /bin/bash
+useradd crafty -m -s /bin/bash
 msg_info "Successfully set up Crafty-Controller User"
 
 msg_info "Installing Craty-Controller (Patience)"
 cd /opt
 mkdir -p /opt/crafty-controller/crafty /opt/crafty-controller/server
-chown -R crafty:crafty /opt/craft-controller/
 RELEASE=$(curl -s "https://gitlab.com/api/v4/projects/20430749/releases" | grep -o '"tag_name":"v[^"]*"' | head -n 1 | sed 's/"tag_name":"v//;s/"//')
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 wget -q "https://gitlab.com/crafty-controller/crafty-4/-/archive/v${RELEASE}/crafty-4-v${RELEASE}.zip"
 unzip -q crafty-4-v${RELEASE}.zip
-mv crafty-4-v${RELEASE} /opt/crafty-controller/crafty
+mv crafty-4-v${RELEASE} /opt/crafty-controller/crafty/crafty-4
+chown -R crafty:crafty /opt/crafty-controller/
+
+msg_info "Setting up python venv and installing dependencies"
+
 cd /opt/crafty-controller/crafty
 python3 -m venv .venv
-cd /opt/crafty-controller/crafty/crafty-4
-pip3 install --no-cache-dir -r requirements.txt
-msg_ok "Installed Craft-Controller"
+sudo -u crafty bash <<EOF
+    # Activate virtual environment
+    source /opt/crafty-controller/crafty/.venv/bin/activate
+    
+    # Navigate to Crafty 4 directory
+    cd /opt/crafty-controller/crafty/crafty-4
+    
+    # Install dependencies
+    pip3 install --no-cache-dir -r requirements.txt
+EOF
+msg_ok "Installed Craft-Controller and dependencies"
 
 msg_info "Creating Crafty 4 service and startup file"
 cat <<EOF >/opt/run_crafty-controller.sh
@@ -56,9 +68,9 @@ source .venv/bin/activate
 cd crafty-4
 exec python3 main.py
 EOF
-chmod +x /opt/run_crafty.sh
+chmod +x /opt/run_crafty-controller.sh
 
-cat <<EOF >/etc/systemd/system/crafty.service
+cat <<EOF >/etc/systemd/system/crafty-controller.service
 [Unit]
 Description=Crafty 4
 After=network.target
@@ -66,8 +78,8 @@ After=network.target
 [Service]
 Type=simple
 User=crafty
-WorkingDirectory=
-ExecStart/usr/bin/env bash -c /opt/run_crafty-controller.sh
+WorkingDirectory=/opt/crafty-controller/crafty
+ExecStart=/usr/bin/env bash -c /opt/run_crafty-controller.sh
 Restart=on-failure
 
 [Install]
