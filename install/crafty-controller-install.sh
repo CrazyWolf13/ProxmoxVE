@@ -20,6 +20,8 @@ $STD apt-get install -y \
   mc \
   git \
   sed \
+  lsb-release \
+  apt-transport-https \
   coreutils \
   python3 \
   python3-dev \
@@ -29,13 +31,13 @@ $STD apt-get install -y \
   openjdk-17-jdk \
   openjdk-17-jre
 msg_info "Adding more recent java version"
-$STD echo "deb http://deb.debian.org/debian unstable main" | sudo tee /etc/apt/sources.list.d/unstable.list
-$STD echo -e "Package: openjdk-21-jdk\nPin: release a=unstable\nPin-Priority: 1001" | sudo tee /etc/apt/preferences.d/unstable-java
-$STD echo -e "Package: *\nPin: release a=stable\nPin-Priority: 1000" | sudo tee /etc/apt/preferences.d/stable-packages
-$STD sudo apt-get update
-$STD sudo DEBIAN_FRONTEND=noninteractive apt-get install -t unstable -y \
-    openjdk-21-jdk \
-    openjdk-21-jre
+$STD sudo apt install -y 
+wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo tee /etc/apt/trusted.gpg.d/adoptium.asc
+sudo wget -qO - https://packages.adoptium.net/artifactory/deb/$(lsb_release -c | awk '{print $2}')/adoptium.list -P /etc/apt/sources.list.d/
+$STD sudo apt update
+$STD sudo apt install -y \
+  temurin-21-jdk \
+  temurin-21-jre
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
