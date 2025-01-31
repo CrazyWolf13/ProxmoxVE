@@ -52,11 +52,11 @@ msg_info "Setting up python venv and installing dependencies"
 cd /opt/crafty-controller/crafty
 python3 -m venv .venv
 chown -R crafty:crafty /opt/crafty-controller/
-$STD sudo -u crafty bash <<"EOF"
+$STD sudo -u crafty bash -c '
     source /opt/crafty-controller/crafty/.venv/bin/activate
     cd /opt/crafty-controller/crafty/crafty-4
     pip3 install --no-cache-dir -r requirements.txt
-EOF
+'
 msg_ok "Installed Craft-Controller and dependencies"
 
 msg_info "Creating Crafty 4 service and startup file"
