@@ -32,25 +32,34 @@ msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
 useradd crafty -s /bin/bash
+msg_info "Successfully set up Crafty-Controller User"
 
 msg_info "Installing Craty-Controller (Patience)"
 cd /opt
+mkdir -p /opt/crafty-controller/crafty /opt/crafty-controller/server
+chown -R crafty:crafty /opt/craft-controller/
 RELEASE=$(curl -s "https://gitlab.com/api/v4/projects/20430749/releases" | grep -o '"tag_name":"v[^"]*"' | head -n 1 | sed 's/"tag_name":"v//;s/"//')
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 wget -q "https://gitlab.com/crafty-controller/crafty-4/-/archive/v${RELEASE}/crafty-4-v${RELEASE}.zip"
 unzip -q crafty-4-v${RELEASE}.zip
-mv crafty-4-v${RELEASE} /opt/crafty-controller 
-mkdir -p /opt/crafty-controller/ /opt/crafty-controller_data/minecraft/server
-chown -R crafty:crafty /opt/craft-controller_data/
-chown -R crafty:crafty /opt/craft-controller/
-cd /opt/crafty-controller
-
+mv crafty-4-v${RELEASE} /opt/crafty-controller/crafty
+cd /opt/crafty-controller/crafty
+python3 -m venv .venv
+cd /opt/crafty-controller/crafty/crafty-4
+pip3 install --no-cache-dir -r requirements.txt
 msg_ok "Installed Craft-Controller"
 
+msg_info "Creating Crafty 4 service and startup file"
+cat <<EOF >/opt/run_crafty-controller.sh
+#!/bin/bash
+cd /opt/crafty-controller/crafty
+source .venv/bin/activate
+cd crafty-4
+exec python3 main.py
+EOF
+chmod +x /opt/run_crafty.sh
 
-
-msg_info "Creating Crafty 4 service file"
-cat <<EOF >$SERVICE_FILE
+cat <<EOF >/etc/systemd/system/crafty.service
 [Unit]
 Description=Crafty 4
 After=network.target
@@ -59,7 +68,7 @@ After=network.target
 Type=simple
 User=crafty
 WorkingDirectory=
-ExecStart=$BASH_BIN $RUN_SCRIPT
+ExecStart/usr/bin/env bash -c /opt/run_crafty-controller.sh
 Restart=on-failure
 
 [Install]
@@ -68,8 +77,6 @@ EOF
 
 msg_info "Enabling and starting Crafty-Controller service"
 systemctl enable --now crafty-controller.service
-
-
 
 
 motd_ssh
