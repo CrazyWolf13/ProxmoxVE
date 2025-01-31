@@ -27,14 +27,18 @@ $STD apt-get install -y \
   python3-venv \
   software-properties-common \
   openjdk-17-jdk \
-  openjdk-17-jre \
-  openjdk-21-jdk \
-  openjkd-21-jre
+  openjdk-17-jre
+msg_info "Adding more recent java version"
+$STD echo "deb http://deb.debian.org/debian unstable main" | sudo tee /etc/apt/sources.list.d/unstable.list
+$STD echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 100" | sudo tee /etc/apt/preferences.d/limit-unstable
+$STD sudo apt-get update
+$STD sudo apt-get install -t unstable -y \
+    openjdk-21-jdk \
+    openjdk-21-jre
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
 useradd crafty -m -s /bin/bash
-msg_info "Successfully set up Crafty-Controller User"
 
 msg_info "Installing Craty-Controller (Patience)"
 cd /opt
@@ -80,7 +84,7 @@ After=network.target
 Type=simple
 User=crafty
 WorkingDirectory=/opt/crafty-controller/crafty
-ExecStart=/usr/bin/env bash -c /opt/run_crafty-controller.sh
+ExecStart=/opt/run_crafty-controller.sh
 Restart=on-failure
 
 [Install]
