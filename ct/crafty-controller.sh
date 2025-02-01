@@ -39,17 +39,28 @@ function update_script() {
       msg_info "Stopping Crafty-Controller"
       systemctl stop crafty-controller.service
       msg_ok "Stopped Crafty-Controller"
+
+      msg_info "Creating Backup of config"
+      cp -a /opt/crafty-controller/crafty/crafty-4/app/config/. /opt/crafty-controller/backup
+      msg_ok "Backup Created"
       
       msg_info "Updating Crafty-Controller to v${RELEASE}"
+      wget -q "https://gitlab.com/crafty-controller/crafty-4/-/archive/v${RELEASE}/crafty-4-v${RELEASE}.zip"
+      unzip -q crafty-4-v${RELEASE}.zip
+      cp -a crafty-4-v${RELEASE}/. /opt/crafty-controller/crafty/crafty-4/
+      rm -rf crafty-4-v${RELEASE}
       cd /opt/crafty-controller/crafty/crafty-4
       sudo -u crafty bash -c '
-        git fetch && git pull
         source /opt/crafty-controller/crafty/.venv/bin/activate
-        cd /opt/crafty-controller/crafty/crafty-4
         pip3 install --no-cache-dir -r requirements.txt
       ' &>/dev/null
       echo "${RELEASE}" >"/opt/crafty-controller_version.txt"
       msg_ok "Updated Crafty-Controller to v${RELEASE}"
+
+      msg_info "Restoring Backup of config"
+      cp -a /opt/crafty-controller/backup/. /opt/crafty-controller/crafty/crafty-4/app/config
+      rm -rf /opt/crafty-controller/backup
+      msg_ok "Backup Restored"
 
       msg_info "Starting Crafty-Controller"
       systemctl start crafty-controller.service
