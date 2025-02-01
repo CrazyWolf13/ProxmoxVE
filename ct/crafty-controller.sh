@@ -52,7 +52,7 @@ function update_script() {
       msg_ok "Updated Crafty-Controller to v${RELEASE}"
 
       msg_info "Starting Crafty-Controller"
-      systemctl start crafty.service
+      systemctl start crafty-controller.service
       msg_ok "Started Crafty-Controller"
 
       msg_ok "Updated Successfully"
