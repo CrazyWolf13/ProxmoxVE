@@ -34,7 +34,7 @@ function update_script() {
     fi
    
     RELEASE=$(curl -s "https://gitlab.com/api/v4/projects/20430749/releases" | grep -o '"tag_name":"v[^"]*"' | head -n 1 | sed 's/"tag_name":"v//;s/"//')
-    if [[ ! -f /opt/$crafty-controller_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/crafty-controller_version.txt)" ]]; then
+    if [[ ! -f /opt/crafty-controller_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/crafty-controller_version.txt)" ]]; then
       
       msg_info "Stopping Crafty-Controller"
       systemctl stop crafty-controller.service

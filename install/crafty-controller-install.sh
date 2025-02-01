@@ -33,6 +33,7 @@ $STD apt-get install -y \
 msg_info "Adding more recent java version"
 wget -q https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb
 $STD sudo dpkg -i jdk-21_linux-x64_bin.deb
+rm -f jdk-21_linux-x64_bin.deb
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Crafty-Controller User"
