@@ -59,17 +59,8 @@ $STD sudo -u crafty bash -c '
 '
 msg_ok "Installed Craft-Controller and dependencies"
 
-msg_info "Creating Crafty 4 service and startup file"
-cat > /opt/run_crafty-controller.sh << EOF
-#!/bin/bash
-cd /opt/crafty-controller/crafty
-source .venv/bin/activate
-cd crafty-4
-exec python3 main.py
-EOF
-chmod +x /opt/run_crafty-controller.sh
-
-cat <<EOF >/etc/systemd/system/crafty-controller.service
+msg_info "Setting up Crafty-Controller service"
+cat > /etc/systemd/system/crafty-controller.service << 'EOF'
 [Unit]
 Description=Crafty 4
 After=network.target
@@ -77,17 +68,16 @@ After=network.target
 [Service]
 Type=simple
 User=crafty
-WorkingDirectory=/opt/crafty-controller/crafty
-ExecStart=/opt/run_crafty-controller.sh
+WorkingDirectory=/opt/crafty-controller/crafty/crafty-4
+Environment=PATH=/opt/crafty-controller/crafty/.venv/bin:$PATH
+ExecStart=/opt/crafty-controller/crafty/.venv/bin/python3 main.py
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 EOF
-
 msg_info "Enabling and starting Crafty-Controller service"
 systemctl enable --now crafty-controller.service
-
 
 motd_ssh
 customize
