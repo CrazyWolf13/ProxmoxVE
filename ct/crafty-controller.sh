@@ -43,6 +43,10 @@ function update_script() {
       msg_info "Creating Backup of config"
       cp -a /opt/crafty-controller/crafty/crafty-4/app/config/. /opt/crafty-controller/backup
       rm /opt/crafty-controller/backup/version.json
+      rm /opt/crafty-controller/backup/credits.json
+      rm /opt/crafty-controller/backup/logging.json
+      rm /opt/crafty-controller/backup/default.json.example
+      rm /opt/crafty-controller/backup/motd_format.json
       msg_ok "Backup Created"
       
       msg_info "Updating Crafty-Controller to v${RELEASE}"
@@ -61,6 +65,7 @@ function update_script() {
       msg_info "Restoring Backup of config"
       cp -a /opt/crafty-controller/backup/. /opt/crafty-controller/crafty/crafty-4/app/config
       rm -rf /opt/crafty-controller/backup
+      chown -R crafty:crafty /opt/crafty-controller/
       msg_ok "Backup Restored"
 
       msg_info "Starting Crafty-Controller"
