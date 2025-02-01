@@ -48,7 +48,7 @@ function update_script() {
         cd /opt/crafty-controller/crafty/crafty-4
         pip3 install --no-cache-dir -r requirements.txt
       ' &>/dev/null
-      echo "${RELEASE}" >"/opt/craft-controller_version.txt"
+      echo "${RELEASE}" >"/opt/crafty-controller_version.txt"
       msg_ok "Updated Crafty-Controller to v${RELEASE}"
 
       msg_info "Starting Crafty-Controller"
