@@ -78,7 +78,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF
 msg_info "Enabling and starting Crafty-Controller service"
-systemctl enable --now crafty-controller.service
+$STD systemctl enable --now crafty-controller.service
 
 motd_ssh
 customize
@@ -90,5 +90,6 @@ $STD apt-get -y autoclean
 msg_ok "Cleaned"
 # Wait for creds generation
 sleep 10
+echo .
 echo -e "${TAB}${BL}Username: $(grep -oP '(?<="username": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
 echo -e "${TAB}${BL}Password: $(grep -oP '(?<="password": ")[^"]*' /opt/crafty-controller/crafty/crafty-4/app/config/default-creds.txt)${CL}"
