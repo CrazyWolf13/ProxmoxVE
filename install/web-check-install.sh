@@ -38,7 +38,7 @@ msg_ok "Set up Node.js Repository"
 msg_info "Setup Python3"
 $STD apt-get install -y \
   python3 \
-  python3-pip \
+  python3-pip
 rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
 msg_ok "Setup Python3"
 
