@@ -36,9 +36,7 @@ echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.co
 msg_ok "Set up Node.js Repository"
 
 msg_info "Setup Python3"
-$STD apt-get install -y \
-  python3 \
-  python3-pip
+$STD apt-get install -y python3
 rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
 msg_ok "Setup Python3"
 
