@@ -14,7 +14,7 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get -y install \
+$STD apt-get -y install --no-install-recommends \
   curl \
   sudo \
   mc \
