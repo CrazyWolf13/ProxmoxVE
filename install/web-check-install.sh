@@ -5,7 +5,7 @@
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://github.com/lissy93/web-check
 
-source /dev/stdin <<< "https://raw.githubusercontent.com/CrazyWolf13/ProxmoxVE/refs/heads/CrazyWolf13-add-web-check/misc/install.func"
+source /dev/stdin <<< curl -s https://raw.githubusercontent.com/CrazyWolf13/ProxmoxVE/refs/heads/CrazyWolf13-add-web-check/misc/install.func
 color
 verb_ip6
 catch_errors
