@@ -44,7 +44,10 @@ msg_info "Installing Chromium"
 curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/trusted.gpg.d/google-archive.gpg
 echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >/etc/apt/sources.list.d/google.list
 $STD apt-get update
-$STD apt-get -y install chromium
+$STD apt-get -y install \
+  chromium \
+  libxss1 \
+  lsb-release
 msg_ok "Installed Chromium"
 
 msg_info "Installing Node.js"
