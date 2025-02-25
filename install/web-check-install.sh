@@ -21,7 +21,7 @@ $STD apt-get -y install \
   git \
   gnupg \
   traceroute \
-  python \
+  python3 \
   make \ 
   g++ \
   traceroute \
