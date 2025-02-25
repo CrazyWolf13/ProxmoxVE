@@ -60,7 +60,7 @@ msg_ok "Finished setting up Chromium"
 msg_info "Installing Web-Check"
 temp_file=$(mktemp)
 RELEASE=$(curl -s https://api.github.com/repos/Lissy93/web-check/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
-wget -q "https://github.com/Lissy93/web-check/archive/refs/tags/v${RELEASE}.tar.gz" -O $temp_file
+wget -q "https://github.com/Lissy93/web-check/archive/refs/tags/${RELEASE}.tar.gz" -O $temp_file
 tar xzf $temp_file
 mv web-check-${RELEASE} /opt/web-check
 cd /opt/web-check
