@@ -28,7 +28,7 @@ function update_script() {
         msg_error "No ${APP} Installation Found!"
         exit
     fi
-    RELEASE=$(curl -s https://api.github.com/repos/Lissy93/web-check/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+    RELEASE=$(curl -s https://api.github.com/repos/Lissy93/web-check/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
     if [[ "${RELEASE}" != "$(cat /opt/web-check_version.txt)" ]] || [[ ! -f /opt/web-check_version.txt ]]; then
         msg_info "Stopping $APP"
         systemctl stop web-check
