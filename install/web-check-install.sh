@@ -107,7 +107,7 @@ service dbus start
 [[ -z "${DISPLAY}" ]] && export DISPLAY=":99"
 Xvfb "${DISPLAY}" -screen 0 "${SCREEN_RESOLUTION}" &
 cd /opt/web-check
-exec yarn start
+exec yarn serve
 EOF
 chmod +x /opt/start-web-check.sh
 cat > /etc/systemd/system/web-check.service << 'EOF'
@@ -133,7 +133,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm -rf $temp_dir
+rm -rf $temp_file
 rm -rf /var/lib/apt/lists/* /app/node_modules/.cache
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
