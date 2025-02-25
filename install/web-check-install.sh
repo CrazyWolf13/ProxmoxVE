@@ -32,7 +32,7 @@ msg_ok "Installed Dependencies"
 msg_info "Setting up Node.js Repository"
 mkdir -p /etc/apt/keyrings
 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_21.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
 msg_ok "Set up Node.js Repository"
 
 msg_info "Setup Python3"
@@ -65,9 +65,6 @@ wget -q "https://github.com/Lissy93/web-check/archive/refs/tags/${RELEASE}.tar.g
 tar xzf $temp_file
 mv web-check-${RELEASE} /opt/web-check
 cd /opt/web-check
-cat > /opt/web-check/.npmrc << 'EOF'
-unix-dgram@latest
-EOF
 cat <<EOF > /opt/web-check/.env
 CHROME_PATH=/usr/bin/chromium
 HEADLESS=true
