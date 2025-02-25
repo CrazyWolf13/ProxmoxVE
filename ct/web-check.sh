@@ -40,7 +40,6 @@ function update_script() {
         msg_ok "Backed up Data"
 
         msg_info "Updating $APP to v${RELEASE}"
-        DEBIAN_FRONTEND=noninteractive
         $STD apt-get update
         $STD apt-get -y upgrade
         temp_dir=$(mktemp -d)
