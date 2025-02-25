@@ -65,6 +65,9 @@ wget -q "https://github.com/Lissy93/web-check/archive/refs/tags/${RELEASE}.tar.g
 tar xzf $temp_file
 mv web-check-${RELEASE} /opt/web-check
 cd /opt/web-check
+cat > /opt/web-check/.npmrc << 'EOF'
+unix-dgram@latest
+EOF
 cat <<EOF > /opt/web-check/.env
 CHROME_PATH=/usr/bin/chromium
 HEADLESS=true
