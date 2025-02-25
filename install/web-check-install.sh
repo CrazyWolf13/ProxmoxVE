@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+
+# Copyright (c) 2021-2025 community-scripts ORG
+# Author: CrazyWolf13
+# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
+# Source: https://github.com/lissy93/web-check
+
+source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
+color
+verb_ip6
+catch_errors
+setting_up_container
+network_check
+update_os
+
+msg_info "Setting up Node.js Repository"
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
+msg_ok "Set up Node.js Repository"
+
+msg_info "Setup Python3"
+$STD apt-get install -y \
+  python3 \
+  python3-pip \
+rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
+msg_ok "Setup Python3"
+
+msg_info "Installing Dependencies"
+$STD apt-get -y install \ 
+  curl \
+  sudo \
+  mc \
+  git \
+  gnupg \
+  traceroute \
+  python \
+  make \ 
+  g++ \
+  traceroute \
+  xvfb \
+  dbus
+msg_ok "Installed Dependencies"
+
+msg_info "Installing Chromium"
+curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/trusted.gpg.d/google-archive.gpg
+echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >/etc/apt/sources.list.d/google.list
+$STD apt-get update
+$STD apt-get -y install chromium
+msg_ok "Installed Chromium"
+
+msg_info "Setting up Node.js Repository"
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
+msg_ok "Set up Node.js Repository"
+
+msg_info "Installing Node.js"
+$STD apt-get update
+$STD apt-get install -y nodejs
+msg_ok "Installed Node.js"
+
+msg_info "Setting up Chromium"
+/usr/bin/chromium --no-sandbox --version > /etc/chromium-version
+chmod 755 /usr/bin/chromium
+msg_ok "Finished setting up Chromium"
+
+msg_info "Installing Web-Check"
+temp_file=$(mktemp)
+RELEASE=$(curl -s https://api.github.com/repos/Lissy93/web-check/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+wget -q "https://github.com/Lissy93/web-check/archive/refs/tags/v${RELEASE}.tar.gz" -O $temp_file
+tar xzf $temp_file
+mv web-check-${RELEASE} /opt/web-check
+cd /opt/web-check
+cat <<EOF > /opt/web-check/.env
+CHROME_PATH=/usr/bin/chromium
+HEADLESS=true
+GOOGLE_CLOUD_API_KEY=''
+REACT_APP_SHODAN_API_KEY=''
+REACT_APP_WHO_API_KEY=''
+SECURITY_TRAILS_API_KEY=''
+CLOUDMERSIVE_API_KEY=''
+TRANCO_USERNAME=''
+TRANCO_API_KEY=''
+URL_SCAN_API_KEY=''
+BUILT_WITH_API_KEY=''
+TORRENT_IP_API_KEY=''
+PORT='3000'
+DISABLE_GUI='false'
+API_TIMEOUT_LIMIT='10000'
+API_CORS_ORIGIN='*'
+API_ENABLE_RATE_LIMIT='true'
+REACT_APP_API_ENDPOINT='/api'
+ENABLE_ANALYTICS='false'
+EOF
+$STD yarn install --frozen-lockfile --network-timeout 100000
+echo "${RELEASE}" >/opt/${APPLICATION}_version.txt
+msg_ok "Installed Web-Check"
+
+msg_info "Building Web-Check"
+$STD yarn build --production
+msg_ok "Built Web-Check"
+
+msg_info "Creating Service"
+cat > /opt/start-web-check.sh << 'EOF'
+#!/bin/bash
+SCREEN_RESOLUTION="${SCREEN_RESOLUTION:-1280x1024x24}"
+if [[ ! "${SCREEN_RESOLUTION}" =~ ^[0-9]+x[0-9]+x(8|16|24)$ ]]; then
+  echo "SCREEN_RESOLUTION must match screen resolution like '1280x1024x24'"
+  echo "last number (color) must be 8,16 or 24"
+  exit 1
+fi
+service dbus start
+[[ -z "${DISPLAY}" ]] && export DISPLAY=":99"
+Xvfb "${DISPLAY}" -screen 0 "${SCREEN_RESOLUTION}" &
+cd /opt/web-check
+exec yarn start
+EOF
+chmod +x /opt/start-web-check.sh
+cat > /etc/systemd/system/web-check.service << 'EOF'
+[Unit]
+Description=Web Check Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/web-check
+Environment=/opt/web-check/.env
+ExecStart=/opt/start-web-check.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+$STD systemctl enable -q --now web-check
+msg_ok "Created Service"
+
+motd_ssh
+customize
+
+msg_info "Cleaning up"
+rm -rf $temp_dir
+rm -rf /var/lib/apt/lists/* /app/node_modules/.cache
+$STD apt-get -y autoremove
+$STD apt-get -y autoclean
+msg_ok "Cleaned"
+
+motd_ssh
+customize
