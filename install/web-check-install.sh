@@ -127,7 +127,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/opt/web-check
-Environment=/opt/web-check/.env
+EnvironmentFile=/opt/web-check/.env
 ExecStart=/opt/start-web-check.sh
 Restart=on-failure
 
