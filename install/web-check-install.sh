@@ -22,7 +22,7 @@ $STD apt-get -y install \
   gnupg \
   traceroute \
   python3 \
-  make \ 
+  make \
   g++ \
   traceroute \
   xvfb \
